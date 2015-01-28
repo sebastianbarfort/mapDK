@@ -1,0 +1,18 @@
+{
+    "contents" : "# test script \n\nmapDK(values = test.data$indbrud, id = test.data$kommune)\n\n# let's randomly remove 20 observations\n\ntest.data.2 = mapDK::test.data[-sample(1:nrow(mapDK::test.data), 20), ]\n\nmapDK(values = test.data.2$indbrud, id = test.data.2$kommune, show_missing = FALSE) \n",
+    "created" : 1422443877737.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2527012620",
+    "id" : "4D05F8A3",
+    "lastKnownWriteTime" : 1422443776,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

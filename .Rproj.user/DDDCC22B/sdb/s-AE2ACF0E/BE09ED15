@@ -1,0 +1,17 @@
+{
+    "contents" : "exportPattern(\"^[[:alpha:]]+\")\nexport(mapDK)\nimport(ggplot2)\nimport(wesanderson)\n",
+    "created" : 1422445994142.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1909248063",
+    "id" : "BE09ED15",
+    "lastKnownWriteTime" : 1422446001,
+    "path" : "~/git/mapDK/NAMESPACE",
+    "project_path" : "NAMESPACE",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "type" : "r_namespace"
+}
