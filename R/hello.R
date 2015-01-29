@@ -12,45 +12,44 @@
 #   Check: 'Cmd + Shift + E'
 #   Test: 'Cmd + Shift + T'
 #
-mapDK <- function(values = NULL, id = NULL, dataSource = "data",
+mapDK <- function(values = NULL, id = NULL, data,
   detail = "municipal", show_missing = TRUE, sub = NULL, guide.label = NULL){
 
-  ### If dataSource is a dataframe use it
-  if (class(data) == "data.frame") shapedata = data
-  ### If dataSource is a string load data
-  if (class(dataSource) == "character") {
-    if (dataSource == "data") {
-      if (detail == "municipal") {
-        shapedata <- municipality.new # require LazyData in DESCRIPTION
-      }
-      if (detail == "parish")
-        shapedata <- parish
-    }
+  if (detail == "municipal") {
+    shapedata = municipality.new
+  }
+  else {
+    shapedata = parish
   }
 
-
-  if (!is.null(values) & is.null(id)){
-    warning("id not provided. values assigned by order")
+  if (!missing(data)){
+    # make sure both values and id is provided
+    if (is.null(values) | is.null(id)){
+      stop(paste("You must provide value and id columns as strings"))
     }
 
-  if (!is.null(values) & !is.null(id)){
-    if(!is.character(id)){
-      stop("id must be a vector of strings otherwise it can be missing and values are assigned by order")
+    values = data[, values]
+    id = data[, id]
+
+    if (!is.null(values) & is.null(id)){
+      warning("id not provided. values assigned by order")
     }
-    ### Remove all non alphanumeric characters from region names and transform to lower case
+
+    if (!is.null(values) & !is.null(id)){
+      if(!is.character(id)){
+        stop("id must be a vector of strings otherwise it can be missing and values are assigned by order")
+      }
+
+
+    # remove non-alphanumeric characters and transform to lowercase
     onlyChar <- function(string) {
       tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
     }
 
-  ### Match region ID or names
-  id.shape <- unique(shapedata$id)
+    # id in shapedata
+    id.shape <- unique(shapedata$id)
 
-  ### Check if some region name is not matched
-  if(sum(is.na(match(onlyChar(id), onlyChar(id.shape)))) > 0) {
-    warning(paste("Some id not recognized:", paste(id[is.na(match_missing)], collapse = ", ")))
-    }
-
-    ### Transform values to factor
+    # transform values to factor
     if(is.numeric(values)) {
       discrete <- FALSE
     } else {
@@ -58,72 +57,95 @@ mapDK <- function(values = NULL, id = NULL, dataSource = "data",
       values <- as.factor(values)
     }
 
-  if(is.numeric(id)) {
-    id_input <- id
-    id <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
-  }
-  match.all <- match(onlyChar(id.shape), onlyChar(id)) # NA if not all region are provided
-  match.missing <- match(onlyChar(id), onlyChar(id.shape)) # NA if some region is not recognized
-
-  pos <- match(onlyChar(shapedata$id), onlyChar(id))
-
-
-  ### Check if some region name is not matched
-  if(sum(is.na(match(onlyChar(id), onlyChar(id.shape)))) > 0) {
-    warning(paste("Some id not recognized:", paste(id[is.na(match_missing)], collapse = ", ")))
-  }
-
-  ### Select 'sub' regions
-  if(show_missing == FALSE) {
-    sub_fromData <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
-    if(is.null(sub)) {
-      sub <- sub_fromData
-    } else {
-      sub <- sub[onlyChar(sub) %in% onlyChar(sub_fromData)]
+    if(is.numeric(id)) {
+      id_input <- id
+      id <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
     }
+
+    # NA if not all region are provided
+    match.all <- match(onlyChar(id.shape), onlyChar(id))
+    # NA if some region is not recognized
+    match.missing <- match(onlyChar(id), onlyChar(id.shape))
+
+    # do all ids match?
+    if(sum(is.na(match.missing)) > 0) {
+      warning(paste("Some id not recognized:",
+        paste(id[is.na(match.missing)], collapse = ", ")))
+    }
+
+    # any regions without data?
+    if(sum(is.na(match.all)) > 0) {
+      warning(paste("You provided no data for the following ids:",
+        paste(id.shape[is.na(match.all)], collapse = ", ")))
+    }
+
+    pos <- match(onlyChar(shapedata$id), onlyChar(id))
+
+    # show missing?
+    if (show_missing == FALSE) {
+      sub_fromData <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
+        if (is.null(sub)) {
+          sub <- sub_fromData
+        }
+        else {
+          sub <- sub[onlyChar(sub) %in% onlyChar(sub_fromData)]
+        }
+    }
+
+    # select sub ids?
+    if (!is.null(sub)) {
+      # Match sub and region
+      sub_match_all <- match(onlyChar(shapedata$id), onlyChar(sub))
+      sub_match_missing <- match(onlyChar(sub), onlyChar(shapedata$id))
+      # Remove shapedata not in sub
+      shapedata <- shapedata[onlyChar(shapedata$id) %in% onlyChar(sub), ]
+      # Remove values not in sub
+      values <- values[onlyChar(id) %in% onlyChar(sub)]
+      # Remove pos not in sub
+      pos <- sub_match_all[which(!is.na(sub_match_all))]
+      # Check if some region sub is not matched
+      if(sum(is.na(sub_match_missing)) > 0) {
+        warning(paste("Some sub not recognized:",
+          paste(id[is.na(sub_match_missing)], collapse = ", ")))
+      }
+    }
+
+    # add values to shape data
+    shapedata[, "values"] <- values[pos]
   }
+}
+
+else {
   if (!is.null(sub)) {
     # Match sub and region
-    sub_match_all <- match(onlyChar(shapedata$id), onlyChar(sub))
     sub_match_missing <- match(onlyChar(sub), onlyChar(shapedata$id))
     # Remove shapedata not in sub
     shapedata <- shapedata[onlyChar(shapedata$id) %in% onlyChar(sub), ]
     # Remove values not in sub
-    values <- values[onlyChar(id) %in% onlyChar(sub)]
-    # Remove pos not in sub
-    pos <- sub_match_all[which(!is.na(sub_match_all))]
-    # Check if some region sub is not matched
     if(sum(is.na(sub_match_missing)) > 0) {
-      warning(paste("Some sub not recognized:", paste(id[is.na(sub_match_missing)], collapse = ", ")))
+      warning(paste("Some sub not recognized:", paste(sub[is.na(sub_match_missing)], collapse = ", ")))
     }
   }
+}
 
-  ### Add values to shape data
-  shapedata[, "values"] <- values[pos]
-
-  ### If the label for the legend is not specified
-  if(is.null(guide.label)){
-    guide.label <- deparse(substitute(values))
-  }
-
-  ### If guide.label contains $, keep the second part
-  if(grepl("\\$", guide.label)) {
-    guide.label <- unlist(strsplit(guide.label, "\\$"))[2]
-  }
-
-  }
-
+  # plot
   gp <- ggplot(shapedata, aes_string(x = "long", y = "lat", group = "group"))
   map <- geom_polygon()
   if (!is.null(values)){
-    map <- geom_polygon(aes_string(fill = "values"))
+    if(length(unique(sub)) == 1){
+      map <- geom_polygon()
+    }
+    else {
+      map <- geom_polygon(aes_string(fill = "values"))
+    }
 
-   # if(discrete == TRUE) {
-   #      scf <- scale_fill_manual(name = guide.label)
-   # } else {
-   #    scf <- scale_fill_continuous(name = guide.label)
-   # }
-   # map <- map + scf
+   # if (discrete == TRUE) {
+  #    scf <- scale_fill_manual(values =
+  #        wes_palette("Zissou", length(unique(values)), type = "discrete"))
+  # } else {
+  #    scf <- scale_fill_continuous(low = "white", high = "black")
+  # }
+  # map <- map + scf
   }
 
   thm <- theme(axis.line=element_blank(),
@@ -137,8 +159,6 @@ mapDK <- function(values = NULL, id = NULL, dataSource = "data",
     panel.grid.major=element_blank(),
     panel.grid.minor=element_blank(),
     plot.background=element_blank())
-
-
 
   out <- gp + map + thm
   return(out)
