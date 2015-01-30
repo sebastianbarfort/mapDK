@@ -1,4 +1,3 @@
 exportPattern("^[[:alpha:]]+")
 export(mapDK)
 import(ggplot2)
-import(wesanderson)

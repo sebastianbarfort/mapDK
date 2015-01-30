@@ -4,16 +4,10 @@
 #' @title Choropleth Maps of Denmark
 #'
 #' @name mapDK
-# http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Build and Reload: 'Cmd + Shift + B'
-#   Check: 'Cmd + Shift + E'
-#   Test: 'Cmd + Shift + T'
-#
+
 mapDK <- function(values = NULL, id = NULL, data,
-  detail = "municipal", show_missing = TRUE, sub = NULL, guide.label = NULL){
+  detail = "municipal", show_missing = TRUE, sub = NULL,
+  guide.label = NULL){
 
   if (detail == "municipal") {
     shapedata = municipality.new
@@ -22,7 +16,17 @@ mapDK <- function(values = NULL, id = NULL, data,
     shapedata = parish
   }
 
+  # remove non-alphanumeric characters and transform to lowercase
+  onlyChar <- function(string) {
+    tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
+  }
+
   if (!missing(data)){
+
+    if (is.null(guide.label)){
+      guide.label = values
+    }
+
     # make sure both values and id is provided
     if (is.null(values) | is.null(id)){
       stop(paste("You must provide value and id columns as strings"))
@@ -39,12 +43,6 @@ mapDK <- function(values = NULL, id = NULL, data,
       if(!is.character(id)){
         stop("id must be a vector of strings otherwise it can be missing and values are assigned by order")
       }
-
-
-    # remove non-alphanumeric characters and transform to lowercase
-    onlyChar <- function(string) {
-      tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
-    }
 
     # id in shapedata
     id.shape <- unique(shapedata$id)
@@ -110,7 +108,7 @@ mapDK <- function(values = NULL, id = NULL, data,
       }
     }
 
-    # add values to shape data
+    # add values to shapedata
     shapedata[, "values"] <- values[pos]
   }
 }
@@ -130,24 +128,6 @@ else {
 
   # plot
   gp <- ggplot(shapedata, aes_string(x = "long", y = "lat", group = "group"))
-  map <- geom_polygon()
-  if (!is.null(values)){
-    if(length(unique(sub)) == 1){
-      map <- geom_polygon()
-    }
-    else {
-      map <- geom_polygon(aes_string(fill = "values"))
-    }
-
-   # if (discrete == TRUE) {
-  #    scf <- scale_fill_manual(values =
-  #        wes_palette("Zissou", length(unique(values)), type = "discrete"))
-  # } else {
-  #    scf <- scale_fill_continuous(low = "white", high = "black")
-  # }
-  # map <- map + scf
-  }
-
   thm <- theme(axis.line=element_blank(),
     axis.text.x=element_blank(),
     axis.text.y=element_blank(),
@@ -159,7 +139,24 @@ else {
     panel.grid.major=element_blank(),
     panel.grid.minor=element_blank(),
     plot.background=element_blank())
+  map <- geom_polygon()
+  if (!is.null(values)){
+    if(length(unique(sub)) == 1){
+      map <- geom_polygon()
+    }
+    else {
+      map <- geom_polygon(aes_string(fill = "values"))
+    }
 
-  out <- gp + map + thm
-  return(out)
+    if (discrete == TRUE) {
+      scf <- scale_fill_discrete(name = guide.label)
+   }
+    else {
+      scf <- scale_fill_continuous(name = guide.label)
+   }
+  return(gp + thm + map + scf)
+  }
+  else {
+    return(gp + map + scf)
+  }
 }

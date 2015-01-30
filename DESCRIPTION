@@ -5,12 +5,10 @@ Version: 0.1
 Date: 2015-01-21
 Author: Sebastian Barfort
 Maintainer: Sebastian Barfort <sebastianbarfort@gmail.com>
-Description: More about what it does (maybe more than one line)
+Description: Create choropleth or standard maps of Denmark using the ggplot2 package. The package allows for mapping at the municipal or parish level.
 Depends:
     R (>= 3.00)
 Imports:
     ggplot2,
-    dplyr,
-    wesanderson
 License: LGPL-3
 LazyData: TRUE
