@@ -1,9 +1,8 @@
-#' @export
-#' @import ggplot2
-#'
-#' @title Choropleth Maps of Denmark
+#' @title Maps of Denmark
 #'
 #' @name mapDK
+#'
+
 
 mapDK <- function(values = NULL, id = NULL, data,
   detail = "municipal", show_missing = TRUE, sub = NULL,
@@ -157,6 +156,6 @@ else {
   return(gp + thm + map + scf)
   }
   else {
-    return(gp + map + scf)
+    return(gp + map + thm)
   }
 }
