@@ -5,7 +5,7 @@
 \title{Maps of Denmark}
 \usage{
 mapDK(values = NULL, id = NULL, data, detail = "municipal",
-  show_missing = TRUE, sub = NULL, guide.label = NULL)
+  show_missing = TRUE, sub = NULL, guide.label = NULL, map.title = NULL)
 }
 \description{
 Maps of Denmark
