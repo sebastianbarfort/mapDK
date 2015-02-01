@@ -6,7 +6,7 @@
 
 mapDK <- function(values = NULL, id = NULL, data,
   detail = "municipal", show_missing = TRUE, sub = NULL,
-  guide.label = NULL){
+  guide.label = NULL, map.title = NULL){
 
   if (detail == "municipal") {
     shapedata = municipality.new
@@ -153,9 +153,16 @@ else {
     else {
       scf <- scale_fill_continuous(name = guide.label)
    }
-  return(gp + thm + map + scf)
+  plt <- gp + thm + map + scf
   }
   else {
-    return(gp + map + thm)
+    plt <- gp + map + thm
+  }
+  if(!is.null(map.title)){
+    lab <- labs(x = "", y = "", title = map.title)
+    return(plt + lab)
+  }
+  else {
+    return(plt)
   }
 }
