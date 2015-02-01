@@ -11,8 +11,11 @@ mapDK <- function(values = NULL, id = NULL, data,
   if (detail == "municipal") {
     shapedata = municipality.new
   }
-  else {
+  else if (detail == "parish") {
     shapedata = parish
+  }
+  else {
+    shapedata = region
   }
 
   # remove non-alphanumeric characters and transform to lowercase
