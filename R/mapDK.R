@@ -9,18 +9,33 @@ mapDK <- function(values = NULL, id = NULL, data,
   guide.label = NULL, map.title = NULL){
 
   if (detail == "municipal") {
-    shapedata = municipality.new
+    shapedata = municipality
   }
   else if (detail == "parish") {
     shapedata = parish
+  }
+  else if (detail == "zip"){
+    shapedata = zip
+  }
+  else if (detail == "rural"){
+    shapedata = rural
   }
   else {
     shapedata = region
   }
 
+  # remove DK characters function
+  remove_dk <- function(x){
+    x <- gsub("æ", "ae", x)
+    x <- gsub("ø", "oe", x)
+    x <- gsub("å", "aa", x)
+    return(x)
+  }
+
   # remove non-alphanumeric characters and transform to lowercase
   onlyChar <- function(string) {
-    tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
+    string <- tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
+    string <- remove_dk(string)
   }
 
   if (!missing(data)){
