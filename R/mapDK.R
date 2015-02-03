@@ -3,7 +3,6 @@
 #' @name mapDK
 #'
 
-
 mapDK <- function(values = NULL, id = NULL, data,
   detail = "municipal", show_missing = TRUE, sub = NULL,
   guide.label = NULL, map.title = NULL){
@@ -54,15 +53,6 @@ mapDK <- function(values = NULL, id = NULL, data,
 
     values = data[, values]
     id = data[, id]
-
-    if (!is.null(values) & is.null(id)){
-      warning("id not provided. values assigned by order")
-    }
-
-    if (!is.null(values) & !is.null(id)){
-      if(!is.character(id)){
-        stop("id must be a vector of strings otherwise it can be missing and values are assigned by order")
-      }
 
     # id in shapedata
     id.shape <- unique(shapedata$id)

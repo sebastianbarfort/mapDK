@@ -3,7 +3,6 @@
 #' @name getID
 #'
 
-
 getID <- function(detail = "municipal"){
   if (detail == "municipal") {
     shapedata = municipality
