@@ -121,7 +121,6 @@ mapDK <- function(values = NULL, id = NULL, data,
     # add values to shapedata
     shapedata[, "values"] <- values[pos]
   }
-}
 
 else {
   if (!is.null(sub)) {
