@@ -20,8 +20,11 @@ mapDK <- function(values = NULL, id = NULL, data,
   else if (detail == "rural"){
     shapedata = rural
   }
-  else {
+  else if (detail == "region"){
     shapedata = region
+  }
+  else {
+    stop(paste("the detail you provided is not valid"))
   }
 
   # remove DK characters function
