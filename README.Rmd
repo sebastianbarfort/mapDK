@@ -72,5 +72,11 @@ mapDK(sub = c("Viborg", "Esbjerg"))
 ```
 
 
+### TO DO
+
+- new example data (youth voting)
+- allow for more sophisticated maps (filter by region, city, municipality)
+
+
 
 
