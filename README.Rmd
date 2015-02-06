@@ -37,6 +37,8 @@ polls = mapDK(detail = "polling", map.title = "afstemningssted")
 grid.arrange(region, rural, municipal, zip, parish, polls)
 ```
 
+## Plot Municipality Level Data
+
 To create a static choropleth map at the municipality level I've added some test data of Danish burglaries to the package. 
 
 We can create a map by simply specifying the values and id's (as strings) and the dataset in the call to `mapDK`
@@ -52,14 +54,38 @@ test.data.2 = mapDK::test.data[-sample(1:nrow(mapDK::test.data), 20), ]
 mapDK(values = "indbrud", id = "kommune", data = test.data.2)
 ```
 
+## Plot Polling Place Data
+
+You can create beautiful maps of election results at the polling place level by specifying `detail = "polling"`. To play around, I've added a dataset of Danish general election 2011 results at the polling level to play around with. Below, we plot Socialdemokratiets election results in percent at each available polling state in the map dataset
+
+```{r, warning = FALSE}
+mapDK(values = "stemmer", id = "id", data = filter(votes, navn == "Socialdemokratiet"), 
+      detail = "polling", show_missing = FALSE, 
+      guide.label = "Stemmer \nSocialdemokratiet (pct)")
+```
+
+## The getID function
+
+The `getID` function allows you to print the map key. Running this before plotting your dataset with `mapDK` is probably a good idea. 
+
+`getID` accepts only one argument, `detail`, and using it is as easy as (it returns keys for municipalities if nothing else is specified)
+
+```{r}
+getID()
+```
+
+Say you want the names of the parishes instead, just run `mapDK(detail = "parish")`.
+
+## Extra Features 
+
 You can remove missing municipalities by changing `show_missing` to false and you can add a custom legend title by specifying the `guide.label` option
 
 ```{r}
 mapDK(values = "indbrud", id = "kommune", data = test.data.2, show_missing = FALSE,
-  guide.label = "test label")
+  guide.label = "this is \na label")
 ```
 
-The call returns a `ggplot2` object which can be modified using ggplot's functionality. Say you don't like the default colering. You can modify this to your liking
+Every `mapDK` call returns a `ggplot2` object which can be modified using ggplot's functionality. Say you don't like the default colering. You can modify this to your liking
 
 ```{r}
 #devtools::install_github("karthik/wesanderson")
@@ -76,30 +102,6 @@ You can also provide a `sub` option specifying what municipalities in your data 
 ```{r}
 mapDK(sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"))
 ```
-
-## Plot Polling Place Data
-
-You can create beautiful maps of election results at the polling place level by specifying `detail = "polling"`. To play around, I've added a dataset of Danish general election 2011 results at the polling level to play around with. Below, we plot Socialdemokratiets election results in percent at each available polling state in the map dataset
-
-```{r, warning = FALSE}
-mapDK(values = "stemmer", id = "id", data = dplyr::filter(votes, navn == "Socialdemokratiet"), 
-      detail = "polling", show_missing = FALSE, 
-      guide.label = "Stemmer \nSocialdemokratiet (pct)")
-```
-
-
-## The getID function
-
-The `getID` function allows you to print the map key. Running this before plotting your dataset with `mapDK` is probably a good idea. 
-
-`getID` accepts only one argument, `detail`, and using it is as easy as (it returns keys for municipalities if nothing else is specified)
-
-```{r}
-getID()
-```
-
-Say you want the names of the parishes instead, just run `mapDK(detail = "parish")`.
-
 
 
 
