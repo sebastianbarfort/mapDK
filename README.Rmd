@@ -4,17 +4,10 @@
 library(knitr)
 options(width = 120)
 opts_chunk$set(fig.width = 12, fig.height = 8, fig.path = 'figure/',
-               include = TRUE, warning = FALSE, message = FALSE)
-```
-
-```{r global_options, include = FALSE}
-library(knitr)
-options(width = 120)
-opts_chunk$set(fig.width = 12, fig.height = 8, fig.path = 'figure/',
                include = TRUE, warning = TRUE, message = FALSE)
 ```
 
-This is a very incomplete draft of a mapDK package for making easy ggplot2 based maps of Denmark.
+This is a draft of a mapDK package for making easy ggplot2 based maps of Denmark.
 
 Currently, the package allows you to do two things:
 
@@ -25,29 +18,26 @@ I will make it possible to create interactive choropleth maps when R's interacti
 
 I will also add more maps with time. First on my list is probably municipalities from before the Danish municipality reform of 2005, but suggestions are welcome. 
 
-To install the package simply run
-
-```{r}
-devtools::install_github("sebastianbarfort/mapDK")
-````
+To install the package simply run `devtools::install_github("sebastianbarfort/mapDK")`
 
 To create basic maps at different levels of aggregation simply run
 
 ```{r}
+library("dplyr")
+library("ggplot2")
 library("gridExtra")
 library("mapDK")
-
-region = mapDK(detail = "region", map.title = "region")
+region <- mapDK(detail = "region", map.title = "region")
 rural = mapDK(detail = "rural", map.title = "landsdel")
 municipal = mapDK(map.title = "kommune")
 zip = mapDK(detail = "zip", map.title = "post nummer")
 parish = mapDK(detail = "parish", map.title = "sogn")
+polls = mapDK(detail = "polling", map.title = "afstemningssted")
 
-library("ggplot2")
-grid.arrange(region, municipal, zip, parish)
-````
+grid.arrange(region, rural, municipal, zip, parish, polls)
+```
 
-To create a static choropleth map I've added some test data of Danish burglaries to the package. 
+To create a static choropleth map at the municipality level I've added some test data of Danish burglaries to the package. 
 
 We can create a map by simply specifying the values and id's (as strings) and the dataset in the call to `mapDK`
 
@@ -59,51 +49,44 @@ If you don't provide names for all municipalities (or parishes), the function wi
 
 ```{r, warning = TRUE}
 test.data.2 = mapDK::test.data[-sample(1:nrow(mapDK::test.data), 20), ]
-test.data.2$indbrud2 = as.factor(as.numeric(cut(test.data.2$indbrud, breaks = 4)))
-mapDK(values = "indbrud2", id = "kommune", data = test.data.2)
+mapDK(values = "indbrud", id = "kommune", data = test.data.2)
 ```
 
 You can remove missing municipalities by changing `show_missing` to false and you can add a custom legend title by specifying the `guide.label` option
 
 ```{r}
-mapDK(values = "indbrud2", id = "kommune", data = test.data.2, show_missing = FALSE,
+mapDK(values = "indbrud", id = "kommune", data = test.data.2, show_missing = FALSE,
   guide.label = "test label")
 ```
 
 The call returns a `ggplot2` object which can be modified using ggplot's functionality. Say you don't like the default colering. You can modify this to your liking
 
 ```{r}
-devtools::install_github("karthik/wesanderson")
+#devtools::install_github("karthik/wesanderson")
 library("wesanderson")
+test.data.2$indbrud2 = as.factor(as.numeric(cut(test.data.2$indbrud, breaks = 4)))
 mapDK(values = "indbrud2", id = "kommune", data = test.data.2,
   show_missing = FALSE,  guide.label = "indbrud") +
   scale_fill_manual(values=wes_palette(n=4, name="Darjeeling2"))
 
 ```
 
-You can also provide a `sub` option specifying what municipalities in your data you want plotted
-
-```{r}
-mapDK(values = "indbrud2", id = "kommune", data = test.data.2,
-  sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"),
-  guide.label = "indbrud")
-```
-
-This also works for non-choropleth maps
+You can also provide a `sub` option specifying what municipalities in your data you want plotted. This option works for both choropleth and basic maps. 
 
 ```{r}
 mapDK(sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"))
 ```
 
-## Polling Level Plots
+## Plot Polling Place Data
 
-```{r}
-library("dplyr")
-df = votes  %>% filter(navn == "Socialdemokratiet")
-mapDK(values = "stemmer", id = "id", data = df, 
+You can create beautiful maps of election results at the polling place level by specifying `detail = "polling"`. To play around, I've added a dataset of Danish general election 2011 results at the polling level to play around with. Below, we plot Socialdemokratiets election results in percent at each available polling state in the map dataset
+
+```{r, warning = FALSE}
+mapDK(values = "stemmer", id = "id", data = dplyr::filter(votes, navn == "Socialdemokratiet"), 
       detail = "polling", show_missing = FALSE, 
-      guide.label = "hej hej")
-````
+      guide.label = "Stemmer \nSocialdemokratiet (pct)")
+```
+
 
 ## The getID function
 
