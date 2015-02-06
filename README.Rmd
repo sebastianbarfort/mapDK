@@ -7,11 +7,18 @@ opts_chunk$set(fig.width = 12, fig.height = 8, fig.path = 'figure/',
                include = TRUE, warning = FALSE, message = FALSE)
 ```
 
+```{r global_options, include = FALSE}
+library(knitr)
+options(width = 120)
+opts_chunk$set(fig.width = 12, fig.height = 8, fig.path = 'figure/',
+               include = TRUE, warning = TRUE, message = FALSE)
+```
+
 This is a very incomplete draft of a mapDK package for making easy ggplot2 based maps of Denmark.
 
 Currently, the package allows you to do two things:
 
-1. make basic maps of DK at the municipality or parish level
+1. make basic maps of DK
 2. turn these maps into (static) choropleth maps
 
 I will make it possible to create interactive choropleth maps when R's interactive libraries such as [rCharts](https://github.com/ramnathv/rCharts), [leaftletR](https://github.com/rstudio/leaflet), or [ggvis](https://github.com/rstudio/ggvis), mature a little. 
@@ -24,20 +31,23 @@ To install the package simply run
 devtools::install_github("sebastianbarfort/mapDK")
 ````
 
-To use the basic map simply run 
+To create basic maps at different levels of aggregation simply run
 
 ```{r}
-library(mapDK)
-mapDK()
+library("gridExtra")
+library("mapDK")
+
+region = mapDK(detail = "region", map.title = "region")
+rural = mapDK(detail = "rural", map.title = "landsdel")
+municipal = mapDK(map.title = "kommune")
+zip = mapDK(detail = "zip", map.title = "post nummer")
+parish = mapDK(detail = "parish", map.title = "sogn")
+
+library("ggplot2")
+grid.arrange(region, municipal, zip, parish)
 ````
 
-The default plots Denmark's 98 municipalities. You can plot at the parish level by adding `detail = "parish"` in the `mapDK` call
-
-```{r}
-mapDK(detail = "parish")
-````
-
-To create a static choropleth map I've added some test data to the package. 
+To create a static choropleth map I've added some test data of Danish burglaries to the package. 
 
 We can create a map by simply specifying the values and id's (as strings) and the dataset in the call to `mapDK`
 
@@ -47,29 +57,65 @@ mapDK(values = "indbrud", id = "kommune", data = test.data)
 
 If you don't provide names for all municipalities (or parishes), the function will throw a warning. Let's randomly remove 20 rows and plot the data again
 
-```{r}
+```{r, warning = TRUE}
 test.data.2 = mapDK::test.data[-sample(1:nrow(mapDK::test.data), 20), ]
-mapDK(values = "indbrud", id = "kommune", data = test.data.2)
+test.data.2$indbrud2 = as.factor(as.numeric(cut(test.data.2$indbrud, breaks = 4)))
+mapDK(values = "indbrud2", id = "kommune", data = test.data.2)
 ```
 
 You can remove missing municipalities by changing `show_missing` to false and you can add a custom legend title by specifying the `guide.label` option
 
 ```{r}
-mapDK(values = "indbrud", id = "kommune", data = test.data.2, show_missing = FALSE,
+mapDK(values = "indbrud2", id = "kommune", data = test.data.2, show_missing = FALSE,
   guide.label = "test label")
+```
+
+The call returns a `ggplot2` object which can be modified using ggplot's functionality. Say you don't like the default colering. You can modify this to your liking
+
+```{r}
+devtools::install_github("karthik/wesanderson")
+library("wesanderson")
+mapDK(values = "indbrud2", id = "kommune", data = test.data.2,
+  show_missing = FALSE,  guide.label = "indbrud") +
+  scale_fill_manual(values=wes_palette(n=4, name="Darjeeling2"))
+
 ```
 
 You can also provide a `sub` option specifying what municipalities in your data you want plotted
 
 ```{r}
-mapDK(values = "indbrud", id = "kommune", data = test.data, sub = c("Viborg", "Esbjerg"))
+mapDK(values = "indbrud2", id = "kommune", data = test.data.2,
+  sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"),
+  guide.label = "indbrud")
 ```
 
 This also works for non-choropleth maps
 
 ```{r}
-mapDK(sub = c("Viborg", "Esbjerg"))
+mapDK(sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"))
 ```
+
+## Polling Level Plots
+
+```{r}
+library("dplyr")
+df = votes  %>% filter(navn == "Socialdemokratiet")
+mapDK(values = "stemmer", id = "id", data = df, 
+      detail = "polling", show_missing = FALSE, 
+      guide.label = "hej hej")
+````
+
+## The getID function
+
+The `getID` function allows you to print the map key. Running this before plotting your dataset with `mapDK` is probably a good idea. 
+
+`getID` accepts only one argument, `detail`, and using it is as easy as (it returns keys for municipalities if nothing else is specified)
+
+```{r}
+getID()
+```
+
+Say you want the names of the parishes instead, just run `mapDK(detail = "parish")`.
 
 
 
