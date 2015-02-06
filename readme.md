@@ -35,6 +35,8 @@ grid.arrange(region, rural, municipal, zip, parish, polls)
 
 ![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png) 
 
+## Plot Municipality Level Data
+
 To create a static choropleth map at the municipality level I've added some test data of Danish burglaries to the package. 
 
 We can create a map by simply specifying the values and id's (as strings) and the dataset in the call to `mapDK`
@@ -56,56 +58,11 @@ mapDK(values = "indbrud", id = "kommune", data = test.data.2)
 
 ```
 ## Warning in mapDK(values = "indbrud", id = "kommune", data = test.data.2): You provided no data for the following ids:
-## Albertslund, Ballerup, Frederikssund, Gentofte, Greve, Hillerød, Høje Taastrup, Jammerbugt, Kerteminde, Læsø, Lemvig,
-## Rebild, Roskilde, Samsø, Silkeborg, Skive, Sorø, Vejle, Viborg, Vordingborg
+## Aalborg, Albertslund, Århus, Ballerup, Christiansø, Dragør, Fanø, Faxe, Furesø, Gentofte, Glostrup, Hedensted, Herning,
+## Hørsholm, Ishøj, Mariagerfjord, Rudersdal, Varde, Vejen, Viborg
 ```
 
 ![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
-
-You can remove missing municipalities by changing `show_missing` to false and you can add a custom legend title by specifying the `guide.label` option
-
-
-```r
-mapDK(values = "indbrud", id = "kommune", data = test.data.2, show_missing = FALSE,
-  guide.label = "test label")
-```
-
-```
-## Warning in mapDK(values = "indbrud", id = "kommune", data = test.data.2, : You provided no data for the following ids:
-## Albertslund, Ballerup, Frederikssund, Gentofte, Greve, Hillerød, Høje Taastrup, Jammerbugt, Kerteminde, Læsø, Lemvig,
-## Rebild, Roskilde, Samsø, Silkeborg, Skive, Sorø, Vejle, Viborg, Vordingborg
-```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
-
-The call returns a `ggplot2` object which can be modified using ggplot's functionality. Say you don't like the default colering. You can modify this to your liking
-
-
-```r
-#devtools::install_github("karthik/wesanderson")
-library("wesanderson")
-test.data.2$indbrud2 = as.factor(as.numeric(cut(test.data.2$indbrud, breaks = 4)))
-mapDK(values = "indbrud2", id = "kommune", data = test.data.2,
-  show_missing = FALSE,  guide.label = "indbrud") +
-  scale_fill_manual(values=wes_palette(n=4, name="Darjeeling2"))
-```
-
-```
-## Warning in mapDK(values = "indbrud2", id = "kommune", data = test.data.2, : You provided no data for the following ids:
-## Albertslund, Ballerup, Frederikssund, Gentofte, Greve, Hillerød, Høje Taastrup, Jammerbugt, Kerteminde, Læsø, Lemvig,
-## Rebild, Roskilde, Samsø, Silkeborg, Skive, Sorø, Vejle, Viborg, Vordingborg
-```
-
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
-
-You can also provide a `sub` option specifying what municipalities in your data you want plotted. This option works for both choropleth and basic maps. 
-
-
-```r
-mapDK(sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"))
-```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 ## Plot Polling Place Data
 
@@ -113,13 +70,12 @@ You can create beautiful maps of election results at the polling place level by 
 
 
 ```r
-mapDK(values = "stemmer", id = "id", data = dplyr::filter(votes, navn == "Socialdemokratiet"), 
+mapDK(values = "stemmer", id = "id", data = filter(votes, navn == "Socialdemokratiet"), 
       detail = "polling", show_missing = FALSE, 
       guide.label = "Stemmer \nSocialdemokratiet (pct)")
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
-
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 ## The getID function
 
@@ -157,6 +113,52 @@ getID()
 
 Say you want the names of the parishes instead, just run `mapDK(detail = "parish")`.
 
+## Extra Features 
+
+You can remove missing municipalities by changing `show_missing` to false and you can add a custom legend title by specifying the `guide.label` option
+
+
+```r
+mapDK(values = "indbrud", id = "kommune", data = test.data.2, show_missing = FALSE,
+  guide.label = "this is \na label")
+```
+
+```
+## Warning in mapDK(values = "indbrud", id = "kommune", data = test.data.2, : You provided no data for the following ids:
+## Aalborg, Albertslund, Århus, Ballerup, Christiansø, Dragør, Fanø, Faxe, Furesø, Gentofte, Glostrup, Hedensted, Herning,
+## Hørsholm, Ishøj, Mariagerfjord, Rudersdal, Varde, Vejen, Viborg
+```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+
+Every `mapDK` call returns a `ggplot2` object which can be modified using ggplot's functionality. Say you don't like the default colering. You can modify this to your liking
+
+
+```r
+#devtools::install_github("karthik/wesanderson")
+library("wesanderson")
+test.data.2$indbrud2 = as.factor(as.numeric(cut(test.data.2$indbrud, breaks = 4)))
+mapDK(values = "indbrud2", id = "kommune", data = test.data.2,
+  show_missing = FALSE,  guide.label = "indbrud") +
+  scale_fill_manual(values=wes_palette(n=4, name="Darjeeling2"))
+```
+
+```
+## Warning in mapDK(values = "indbrud2", id = "kommune", data = test.data.2, : You provided no data for the following ids:
+## Aalborg, Albertslund, Århus, Ballerup, Christiansø, Dragør, Fanø, Faxe, Furesø, Gentofte, Glostrup, Hedensted, Herning,
+## Hørsholm, Ishøj, Mariagerfjord, Rudersdal, Varde, Vejen, Viborg
+```
+
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+
+You can also provide a `sub` option specifying what municipalities in your data you want plotted. This option works for both choropleth and basic maps. 
+
+
+```r
+mapDK(sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"))
+```
+
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
 
 
 
