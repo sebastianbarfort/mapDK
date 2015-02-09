@@ -22,6 +22,10 @@ mapDK <- function(values = NULL, id = NULL, data,
   else if (detail == "region"){
     shapedata = region
   }
+  else if (detail == "polling"){
+    shapedata = polling
+  }
+
   else {
     stop(paste("the detail you provided is not valid"))
   }
