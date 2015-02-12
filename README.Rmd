@@ -44,14 +44,14 @@ To create a static choropleth map at the municipality level I've added some test
 We can create a map by simply specifying the values and id's (as strings) and the dataset in the call to `mapDK`
 
 ```{r}
-mapDK(values = "indbrud", id = "kommune", data = test.data)
+mapDK(values = "indbrud", id = "kommune", data = crime)
 ````
 
 If you don't provide names for all municipalities (or parishes), the function will throw a warning. Let's randomly remove 20 rows and plot the data again
 
 ```{r, warning = TRUE}
-test.data.2 = mapDK::test.data[-sample(1:nrow(mapDK::test.data), 20), ]
-mapDK(values = "indbrud", id = "kommune", data = test.data.2)
+crime.2 = mapDK::crime[-sample(1:nrow(mapDK::crime), 20), ]
+mapDK(values = "indbrud", id = "kommune", data = crime.2)
 ```
 
 ## Plot Polling Place Data
@@ -81,7 +81,7 @@ Say you want the names of the parishes instead, just run `mapDK(detail = "parish
 You can remove missing municipalities by changing `show_missing` to false and you can add a custom legend title by specifying the `guide.label` option
 
 ```{r}
-mapDK(values = "indbrud", id = "kommune", data = test.data.2, show_missing = FALSE,
+mapDK(values = "indbrud", id = "kommune", data = crime.2, show_missing = FALSE,
   guide.label = "this is \na label")
 ```
 
@@ -90,8 +90,8 @@ Every `mapDK` call returns a `ggplot2` object which can be modified using ggplot
 ```{r}
 #devtools::install_github("karthik/wesanderson")
 library("wesanderson")
-test.data.2$indbrud2 = as.factor(as.numeric(cut(test.data.2$indbrud, breaks = 4)))
-mapDK(values = "indbrud2", id = "kommune", data = test.data.2,
+crime.2$indbrud2 = as.factor(as.numeric(cut(crime.2$indbrud, breaks = 4)))
+mapDK(values = "indbrud2", id = "kommune", data = crime.2,
   show_missing = FALSE,  guide.label = "indbrud") +
   scale_fill_manual(values=wes_palette(n=4, name="Darjeeling2"))
 
