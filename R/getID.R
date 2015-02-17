@@ -2,6 +2,7 @@
 #'
 #' @title Print map ID
 #'
+#' @author Sebastian Barfort (\email{sebastianbarfort@@gmail.com})
 #' @name getID
 #'
 #' @param detail A string specifying the detail level of the map

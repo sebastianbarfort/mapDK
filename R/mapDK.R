@@ -4,6 +4,8 @@
 #'
 #' @name mapDK
 #'
+#' @author Sebastian Barfort (\email{sebastianbarfort@@gmail.com})
+#'
 #' @return A ggplot class object
 #'
 #' @param values,id String variables specifying names of value and id columns in the dataset

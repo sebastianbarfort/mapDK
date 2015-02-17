@@ -33,6 +33,9 @@ mapDK(detail = "polling")
 mapDK(detail = "zip")
 mapDK(values = "indbrud", id = "kommune", data = crime)
 }
+\author{
+Sebastian Barfort (\email{sebastianbarfort@gmail.com})
+}
 \seealso{
 \url{https://github.com/sebastianbarfort/mapDK}
 }
