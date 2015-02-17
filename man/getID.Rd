@@ -2,11 +2,21 @@
 % Please edit documentation in R/getID.R
 \name{getID}
 \alias{getID}
-\title{print map ID}
+\title{Print map ID}
 \usage{
 getID(detail = "municipal")
 }
+\arguments{
+\item{detail}{A string specifying the detail level of the map}
+}
 \description{
-print map ID
+Print id column in the \code{mapDK} data
+}
+\examples{
+getID()
+getID(detail = "polling")
+}
+\seealso{
+\url{https://github.com/sebastianbarfort/mapDK}
 }
 

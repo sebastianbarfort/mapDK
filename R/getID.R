@@ -1,7 +1,15 @@
-#' @title print map ID
+#' Print id column in the \code{mapDK} data
+#'
+#' @title Print map ID
 #'
 #' @name getID
 #'
+#' @param detail A string specifying the detail level of the map
+#'
+#' @seealso \url{https://github.com/sebastianbarfort/mapDK}
+#' @examples
+#' getID()
+#' getID(detail = "polling")
 
 getID <- function(detail = "municipal"){
   if (detail == "municipal") {

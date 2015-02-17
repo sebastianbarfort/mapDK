@@ -7,7 +7,33 @@
 mapDK(values = NULL, id = NULL, data, detail = "municipal",
   show_missing = TRUE, sub = NULL, guide.label = NULL, map.title = NULL)
 }
+\arguments{
+\item{values,id}{String variables specifying names of value and id columns in the dataset}
+
+\item{data}{A data frame of values and ids}
+
+\item{detail}{A string specifying the detail level of the map}
+
+\item{show_missing}{A logical scalar. Should missing values (including NaN) be showed?}
+
+\item{sub}{A vector of strings specifying subregions to be plotted}
+
+\item{guide.label}{A string with custom label name}
+
+\item{map.title}{A string with map title}
+}
+\value{
+A ggplot class object
+}
 \description{
-Maps of Denmark
+Create quick and beautiful maps of Denmark at different levels of geographic detail
+}
+\examples{
+mapDK(detail = "polling")
+mapDK(detail = "zip")
+mapDK(values = "indbrud", id = "kommune", data = crime)
+}
+\seealso{
+\url{https://github.com/sebastianbarfort/mapDK}
 }
 

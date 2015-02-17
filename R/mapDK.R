@@ -1,7 +1,24 @@
+#' Create quick and beautiful maps of Denmark at different levels of geographic detail
+#'
 #' @title Maps of Denmark
 #'
 #' @name mapDK
 #'
+#' @return A ggplot class object
+#'
+#' @param values,id String variables specifying names of value and id columns in the dataset
+#' @param data A data frame of values and ids
+#' @param detail A string specifying the detail level of the map
+#' @param show_missing A logical scalar. Should missing values (including NaN) be showed?
+#' @param sub A vector of strings specifying subregions to be plotted
+#' @param guide.label A string with custom label name
+#' @param map.title A string with map title
+#'
+#' @seealso \url{https://github.com/sebastianbarfort/mapDK}
+#' @examples
+#' mapDK(detail = "polling")
+#' mapDK(detail = "zip")
+#' mapDK(values = "indbrud", id = "kommune", data = crime)
 
 mapDK <- function(values = NULL, id = NULL, data,
   detail = "municipal", show_missing = TRUE, sub = NULL,
