@@ -3,3 +3,4 @@
 export(mapDK)
 export(getID)
 import(ggplot2)
+import(stringi)

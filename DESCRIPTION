@@ -10,5 +10,6 @@ Depends:
     R (>= 3.00)
 Imports:
     ggplot2,
+    stringi
 License: LGPL-3
 LazyData: TRUE
