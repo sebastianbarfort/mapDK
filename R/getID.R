@@ -37,14 +37,23 @@ getID <- function(detail = "municipal"){
 
   # remove DK characters function
   remove_dk <- function(x){
-    x <- gsub("æ", "ae", x)
-    x <- gsub("ø", "oe", x)
-    x <- gsub("å", "aa", x)
+    x <- gsub("\\u00e6", "ae", x)
+    x <- gsub("\\u00f8", "oe", x)
+    x <- gsub("\\u00e5", "aa", x)
     return(x)
+  }
+
+  # remove non-alphanumeric characters and transform to lowercase
+  onlyChar <- function(string) {
+    string <- tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
+    string <- stringi::stri_escape_unicode(string)
+    string <- remove_dk(string)
+    string <- gsub("\\\\", "", string)
+    return(string)
   }
 
   # id in shapedata
   id.shape <- unique(shapedata$id)
 
-  return(remove_dk(id.shape))
+  return(onlyChar(id.shape))
 }
