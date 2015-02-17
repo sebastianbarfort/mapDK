@@ -51,16 +51,19 @@ mapDK <- function(values = NULL, id = NULL, data,
 
   # remove DK characters function
   remove_dk <- function(x){
-    x <- gsub("æ", "ae", x)
-    x <- gsub("ø", "oe", x)
-    x <- gsub("å", "aa", x)
+    x <- gsub("\\u00e6", "ae", x)
+    x <- gsub("\\u00f8", "oe", x)
+    x <- gsub("\\u00e5", "aa", x)
     return(x)
   }
 
   # remove non-alphanumeric characters and transform to lowercase
   onlyChar <- function(string) {
     string <- tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
+    string <- stringi::stri_escape_unicode(string)
     string <- remove_dk(string)
+    string <- gsub("\\\\", "", string)
+    return(string)
   }
 
   if (!missing(data)){
@@ -76,6 +79,7 @@ mapDK <- function(values = NULL, id = NULL, data,
 
     values = data[, values]
     id = data[, id]
+    id = onlyChar(id)
 
     # id in shapedata
     id.shape <- unique(shapedata$id)
@@ -115,12 +119,12 @@ mapDK <- function(values = NULL, id = NULL, data,
     # show missing?
     if (show_missing == FALSE) {
       sub_fromData <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
-        if (is.null(sub)) {
-          sub <- sub_fromData
-        }
-        else {
-          sub <- sub[onlyChar(sub) %in% onlyChar(sub_fromData)]
-        }
+      if (is.null(sub)) {
+        sub <- sub_fromData
+      }
+      else {
+        sub <- sub[onlyChar(sub) %in% onlyChar(sub_fromData)]
+      }
     }
 
     # select sub ids?
@@ -145,18 +149,18 @@ mapDK <- function(values = NULL, id = NULL, data,
     shapedata[, "values"] <- values[pos]
   }
 
-else {
-  if (!is.null(sub)) {
-    # Match sub and region
-    sub_match_missing <- match(onlyChar(sub), onlyChar(shapedata$id))
-    # Remove shapedata not in sub
-    shapedata <- shapedata[onlyChar(shapedata$id) %in% onlyChar(sub), ]
-    # Remove values not in sub
-    if(sum(is.na(sub_match_missing)) > 0) {
-      warning(paste("Some sub not recognized:", paste(sub[is.na(sub_match_missing)], collapse = ", ")))
+  else {
+    if (!is.null(sub)) {
+      # Match sub and region
+      sub_match_missing <- match(onlyChar(sub), onlyChar(shapedata$id))
+      # Remove shapedata not in sub
+      shapedata <- shapedata[onlyChar(shapedata$id) %in% onlyChar(sub), ]
+      # Remove values not in sub
+      if(sum(is.na(sub_match_missing)) > 0) {
+        warning(paste("Some sub not recognized:", paste(sub[is.na(sub_match_missing)], collapse = ", ")))
+      }
     }
   }
-}
 
   # plot
   gp <- ggplot(shapedata, aes_string(x = "long", y = "lat", group = "group"))
@@ -183,11 +187,11 @@ else {
 
     if (discrete == TRUE) {
       scf <- scale_fill_discrete(name = guide.label)
-   }
+    }
     else {
       scf <- scale_fill_continuous(name = guide.label)
-   }
-  plt <- gp + thm + map + scf
+    }
+    plt <- gp + thm + map + scf
   }
   else {
     plt <- gp + map + thm
