@@ -12,7 +12,7 @@
   \item{id}{Name of region}
 }}
 \source{
-\url{http://www.dst.dk/da/OmDS/omweb/PC-AXIS}
+\url{http://www.dst.dk/da/OmDS/omweb/PC-AXIS.aspx}
 }
 \usage{
 region
