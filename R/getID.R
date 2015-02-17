@@ -14,22 +14,22 @@
 
 getID <- function(detail = "municipal"){
   if (detail == "municipal") {
-    shapedata = municipality
+    shapedata = mapDK::municipality
   }
   else if (detail == "parish") {
-    shapedata = parish
+    shapedata = mapDK::parish
   }
   else if (detail == "zip"){
-    shapedata = zip
+    shapedata = mapDK::zip
   }
   else if (detail == "rural"){
-    shapedata = rural
+    shapedata = mapDK::rural
   }
   else if (detail == "region"){
-    shapedata = region
+    shapedata = mapDK::region
   }
   else if (detail == "polling"){
-    shapedata = polling
+    shapedata = mapDK::polling
   }
   else {
     stop(paste("the detail you provided is not valid"))
