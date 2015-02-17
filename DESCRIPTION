@@ -1,11 +1,11 @@
 Package: mapDK
 Type: Package
 Title: Maps of Denmark
-Version: 0.2
+Version: 0.3.0
 Date: 2015-01-21
 Author: Sebastian Barfort
 Maintainer: Sebastian Barfort <sebastianbarfort@gmail.com>
-Description: Create choropleth or standard maps of Denmark using the ggplot2 package. The package allows for mapping at the municipal or parish level.
+Description: Create static choropleth maps of Denmark using the ggplot2 package.
 Depends:
     R (>= 3.00)
 Imports:
