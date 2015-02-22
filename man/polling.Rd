@@ -17,7 +17,7 @@
   \item{OpstilNav}{...}
 }}
 \source{
-\url{http://www.dst.dk/da/OmDS/omweb/PC-AXIS.aspx}
+\url{Statistics Denmark}
 }
 \usage{
 polling

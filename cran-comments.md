@@ -1,7 +1,7 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Fixed the invalid URLs
+* Removed the invalid URLs
 * Removed non-standard files from the directory
 
 ## Test environments

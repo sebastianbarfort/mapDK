@@ -12,7 +12,7 @@
   \item{id}{Identification number of parish}
 }}
 \source{
-\url{http://www.dst.dk/da/OmDS/omweb/PC-AXIS.aspx}
+\url{Statistics Denmark}
 }
 \usage{
 parish

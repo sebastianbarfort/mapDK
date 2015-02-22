@@ -12,7 +12,7 @@
   \item{id}{Identification number of zip code area}
 }}
 \source{
-\url{http://www.dst.dk/da/OmDS/omweb/PC-AXIS.aspx}
+\url{Statistics Denmark}
 }
 \usage{
 zip

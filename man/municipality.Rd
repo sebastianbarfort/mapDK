@@ -12,7 +12,7 @@
   \item{id}{Name of municipality}
 }}
 \source{
-\url{http://www.dst.dk/da/OmDS/omweb/PC-AXIS.aspx}
+\url{Statistics Denmark}
 }
 \usage{
 municipality

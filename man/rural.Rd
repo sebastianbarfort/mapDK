@@ -12,7 +12,7 @@
   \item{id}{Name of rural area}
 }}
 \source{
-\url{http://www.dst.dk/da/OmDS/omweb/PC-AXIS.aspx}
+\url{Statistics Denmark}
 }
 \usage{
 rural
