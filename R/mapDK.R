@@ -44,6 +44,12 @@ mapDK <- function(values = NULL, id = NULL, data,
   }
   else if (detail == "polling"){
     shapedata = mapDK::polling
+
+    # subset if sub.plot is provided
+    if (!is.null(sub.plot)){
+      shapedata <- subset(shapedata, KommuneNav %in% sub.plot)
+    }
+
   }
 
   else {
@@ -68,11 +74,6 @@ mapDK <- function(values = NULL, id = NULL, data,
   }
 
   if (!missing(data)){
-
-    # subset if sub.plot is provided
-    if (!is.null(sub.plot)){
-      shapedata <- subset(shapedata, KommuneNav %in% sub.plot)
-    }
 
     if (is.null(guide.label)){
       guide.label = values
@@ -181,7 +182,9 @@ mapDK <- function(values = NULL, id = NULL, data,
     panel.grid.major=element_blank(),
     panel.grid.minor=element_blank(),
     plot.background=element_blank(),
-    plot.title = element_text(face='bold'))
+    plot.title = element_text(face='bold'),
+    strip.text.x = element_text(size = rel(1), face='bold'),
+    strip.background = element_rect(colour="white", fill="white"))
   map <- geom_polygon()
   if (!is.null(values)){
     if(length(unique(sub)) == 1){
@@ -204,9 +207,17 @@ mapDK <- function(values = NULL, id = NULL, data,
   }
   if(!is.null(map.title)){
     lab <- labs(x = "", y = "", title = map.title)
-    return(plt + lab)
+    plot <- plt + lab
   }
   else {
-    return(plt)
+    plot <- plt
+  }
+  # facet if more than one sub.plot municipality provided
+  if(length(sub.plot) > 1){
+    fct <- facet_wrap(~ KommuneNav, scales = "free")
+    return(plot + fct)
+  }
+  else {
+    return(plot)
   }
 }
