@@ -5,7 +5,8 @@
 \title{Maps of Denmark}
 \usage{
 mapDK(values = NULL, id = NULL, data, detail = "municipal",
-  show_missing = TRUE, sub = NULL, guide.label = NULL, map.title = NULL)
+  show.missing = TRUE, sub = NULL, sub.plot = NULL, guide.label = NULL,
+  map.title = NULL)
 }
 \arguments{
 \item{values,id}{String variables specifying names of value and id columns in the dataset}
@@ -14,7 +15,7 @@ mapDK(values = NULL, id = NULL, data, detail = "municipal",
 
 \item{detail}{A string specifying the detail level of the map}
 
-\item{show_missing}{A logical scalar. Should missing values (including NaN) be showed?}
+\item{show.missing}{A logical scalar. Should missing values (including NaN) be showed?}
 
 \item{sub}{A vector of strings specifying subregions to be plotted}
 

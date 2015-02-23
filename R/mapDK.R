@@ -11,7 +11,7 @@
 #' @param values,id String variables specifying names of value and id columns in the dataset
 #' @param data A data frame of values and ids
 #' @param detail A string specifying the detail level of the map
-#' @param show_missing A logical scalar. Should missing values (including NaN) be showed?
+#' @param show.missing A logical scalar. Should missing values (including NaN) be showed?
 #' @param sub A vector of strings specifying subregions to be plotted
 #' @param guide.label A string with custom label name
 #' @param map.title A string with map title
@@ -23,7 +23,8 @@
 #' mapDK(values = "indbrud", id = "kommune", data = crime)
 
 mapDK <- function(values = NULL, id = NULL, data,
-  detail = "municipal", show_missing = TRUE, sub = NULL,
+  detail = "municipal", show.missing = TRUE, sub = NULL,
+  sub.plot = NULL,
   guide.label = NULL, map.title = NULL){
 
   if (detail == "municipal") {
@@ -67,6 +68,11 @@ mapDK <- function(values = NULL, id = NULL, data,
   }
 
   if (!missing(data)){
+
+    # subset if sub.plot is provided
+    if (!is.null(sub.plot)){
+      shapedata <- subset(shapedata, KommuneNav %in% sub.plot)
+    }
 
     if (is.null(guide.label)){
       guide.label = values
@@ -117,7 +123,7 @@ mapDK <- function(values = NULL, id = NULL, data,
     pos <- match(onlyChar(shapedata$id), onlyChar(id))
 
     # show missing?
-    if (show_missing == FALSE) {
+    if (show.missing == FALSE) {
       sub_fromData <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
       if (is.null(sub)) {
         sub <- sub_fromData
