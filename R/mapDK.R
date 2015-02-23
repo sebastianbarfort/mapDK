@@ -21,17 +21,18 @@
 #' mapDK(detail = "polling")
 #' mapDK(detail = "zip")
 #' mapDK(values = "indbrud", id = "kommune", data = crime)
-
 mapDK <- function(values = NULL, id = NULL, data,
   detail = "municipal", show.missing = TRUE, sub = NULL,
   sub.plot = NULL,
   guide.label = NULL, map.title = NULL){
-
   if (detail == "municipal") {
     shapedata = mapDK::municipality
   }
   else if (detail == "parish") {
     shapedata = mapDK::parish
+  }
+  else if (detail == "municipal.old") {
+    shapedata = mapDK::municipality.old
   }
   else if (detail == "zip"){
     shapedata = mapDK::zip
@@ -44,18 +45,14 @@ mapDK <- function(values = NULL, id = NULL, data,
   }
   else if (detail == "polling"){
     shapedata = mapDK::polling
-
     # subset if sub.plot is provided
     if (!is.null(sub.plot)){
       shapedata <- subset(shapedata, KommuneNav %in% sub.plot)
     }
-
   }
-
   else {
     stop(paste("the detail you provided is not valid"))
   }
-
   # remove DK characters function
   remove_dk <- function(x){
     x <- gsub("\\u00e6", "ae", x)
@@ -63,7 +60,6 @@ mapDK <- function(values = NULL, id = NULL, data,
     x <- gsub("\\u00e5", "aa", x)
     return(x)
   }
-
   # remove non-alphanumeric characters and transform to lowercase
   onlyChar <- function(string) {
     string <- tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
@@ -72,25 +68,19 @@ mapDK <- function(values = NULL, id = NULL, data,
     string <- gsub("\\\\", "", string)
     return(string)
   }
-
   if (!missing(data)){
-
     if (is.null(guide.label)){
       guide.label = values
     }
-
     # make sure both values and id is provided
     if (is.null(values) | is.null(id)){
       stop(paste("You must provide value and id columns as strings"))
     }
-
     values = data[, values]
     id = data[, id]
     id = onlyChar(id)
-
     # id in shapedata
     id.shape <- unique(shapedata$id)
-
     # transform values to factor
     if(is.numeric(values)) {
       discrete <- FALSE
@@ -98,31 +88,25 @@ mapDK <- function(values = NULL, id = NULL, data,
       discrete <- TRUE
       values <- as.factor(values)
     }
-
     if(is.numeric(id)) {
       id_input <- id
       id <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
     }
-
     # NA if not all region are provided
     match.all <- match(onlyChar(id.shape), onlyChar(id))
     # NA if some region is not recognized
     match.missing <- match(onlyChar(id), onlyChar(id.shape))
-
     # do all ids match?
     if(sum(is.na(match.missing)) > 0) {
       warning(paste("Some id not recognized:",
         paste(id[is.na(match.missing)], collapse = ", ")))
     }
-
     # any regions without data?
     if(sum(is.na(match.all)) > 0) {
       warning(paste("You provided no data for the following ids:",
         paste(id.shape[is.na(match.all)], collapse = ", ")))
     }
-
     pos <- match(onlyChar(shapedata$id), onlyChar(id))
-
     # show missing?
     if (show.missing == FALSE) {
       sub_fromData <- id.shape[!is.na(match(onlyChar(id.shape), onlyChar(id)))]
@@ -133,7 +117,6 @@ mapDK <- function(values = NULL, id = NULL, data,
         sub <- sub[onlyChar(sub) %in% onlyChar(sub_fromData)]
       }
     }
-
     # select sub ids?
     if (!is.null(sub)) {
       # Match sub and region
@@ -151,11 +134,9 @@ mapDK <- function(values = NULL, id = NULL, data,
           paste(id[is.na(sub_match_missing)], collapse = ", ")))
       }
     }
-
     # add values to shapedata
     shapedata[, "values"] <- values[pos]
   }
-
   else {
     if (!is.null(sub)) {
       # Match sub and region
@@ -168,7 +149,6 @@ mapDK <- function(values = NULL, id = NULL, data,
       }
     }
   }
-
   # plot
   gp <- ggplot(shapedata, aes_string(x = "long", y = "lat", group = "group"))
   thm <- theme(axis.line=element_blank(),
@@ -193,7 +173,6 @@ mapDK <- function(values = NULL, id = NULL, data,
     else {
       map <- geom_polygon(aes_string(fill = "values"))
     }
-
     if (discrete == TRUE) {
       scf <- scale_fill_discrete(name = guide.label)
     }

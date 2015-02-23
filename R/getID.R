@@ -16,6 +16,9 @@ getID <- function(detail = "municipal"){
   if (detail == "municipal") {
     shapedata = mapDK::municipality
   }
+  else if (detail == "municipal.old") {
+    shapedata = mapDK::municipality.old
+  }
   else if (detail == "parish") {
     shapedata = mapDK::parish
   }
