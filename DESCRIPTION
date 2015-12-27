@@ -7,8 +7,7 @@ Author: Sebastian Barfort
 Maintainer: Sebastian Barfort <sebastianbarfort@gmail.com>
 Description: Create static choropleth maps of Denmark using the ggplot2 package.
 Depends:
-    R (>= 3.00)
-Imports:
+    R (>= 3.00),
     ggplot2,
     stringi
 License: LGPL-3

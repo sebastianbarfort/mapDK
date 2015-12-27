@@ -15,6 +15,7 @@ Print id column in the \code{mapDK} data
 \examples{
 getID()
 getID(detail = "polling")
+
 }
 \author{
 Sebastian Barfort (\email{sebastianbarfort@gmail.com})
