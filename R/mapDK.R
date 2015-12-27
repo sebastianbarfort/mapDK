@@ -69,6 +69,10 @@ mapDK <- function(values = NULL, id = NULL, data,
     return(string)
   }
   if (!missing(data)){
+    # remove tbl_df from data frame
+    if(sum(class(data) == "tbl_df") > 0){
+      data = data.frame(data)
+    }
     if (is.null(guide.label)){
       guide.label = values
     }
