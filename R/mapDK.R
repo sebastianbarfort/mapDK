@@ -18,13 +18,19 @@
 #'
 #' @seealso \url{https://github.com/sebastianbarfort/mapDK}
 #' @examples
+#'
 #' mapDK(detail = "polling")
 #' mapDK(detail = "zip")
 #' mapDK(values = "indbrud", id = "kommune", data = crime)
+#'
+#' @export
+#'
+#'
 mapDK <- function(values = NULL, id = NULL, data,
   detail = "municipal", show_missing = TRUE, sub = NULL,
   sub.plot = NULL,
-  guide.label = NULL, map.title = NULL){
+  guide.label = NULL, map.title = NULL,
+  map.fill = "gray92", map.colour = "black"){
   if (detail == "municipal") {
     shapedata = mapDK::municipality
   }
@@ -169,7 +175,7 @@ mapDK <- function(values = NULL, id = NULL, data,
     plot.title = element_text(face='bold'),
     strip.text.x = element_text(size = rel(1), face='bold'),
     strip.background = element_rect(colour="white", fill="white"))
-  map <- geom_polygon()
+  map <- geom_polygon(fill = map.fill, colour = map.colour)
   if (!is.null(values)){
     if(length(unique(sub)) == 1){
       map <- geom_polygon()
