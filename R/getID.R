@@ -11,6 +11,8 @@
 #' @examples
 #' getID()
 #' getID(detail = "polling")
+#'
+#' @export
 
 getID <- function(detail = "municipal"){
   if (detail == "municipal") {
