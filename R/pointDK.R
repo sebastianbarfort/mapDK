@@ -24,10 +24,13 @@
 #'
 #' @export
 #'
-pointDK <- function(data, lon = "lon", lat = "lat",
+pointDK <- function(data, lon = "lon", lat = "lat", values = NULL,
                   detail = "municipal", show_missing = TRUE, sub = NULL,
+                  aesthetic = "both",
                   sub.plot = NULL,
-                  guide.label = NULL, map.title = NULL){
+                  guide.label = NULL, map.title = NULL,
+                  map.fill = "gray92", map.colour = "black",
+                  point.colour = "black", ...){
   if (detail == "municipal") {
     shapedata = mapDK::municipality
   }
@@ -58,6 +61,16 @@ pointDK <- function(data, lon = "lon", lat = "lat",
   }
   if (missing(data)){
     stop("you have not provided a valid dataset")
+  }
+
+  if (!is.null(values)) {
+  my.values = data[, values]
+  if(is.numeric(my.values)) {
+    discrete <- FALSE
+  } else {
+    discrete <- TRUE
+    values <- as.factor(my.values)
+  }
   }
 
   # select sub ids?
@@ -99,9 +112,31 @@ pointDK <- function(data, lon = "lon", lat = "lat",
                strip.background = element_rect(colour="white", fill="white"))
   map <- geom_polygon(data = shapedata,
                       aes_string(x = "long", y = "lat", group = "group"),
-                      fill = "white",
-                      colour = "black")
- plot.map = gp + thm + map + geom_point(data = data, aes_string(x = "lon", y = "lat"))
-
-    return(plot.map)
+                      fill = map.fill,
+                      colour = map.colour)
+  if (!is.null(values)){
+    if(aesthetic == "size"){
+      plot.map = gp + thm + map + geom_point(data = data,
+                                             aes_string(x = "lon", y = "lat", size = values),
+                                             colour = point.colour,
+                                             ...)
+    }
+    else if(aesthetic == "colour"){
+      plot.map = gp + thm + map + geom_point(data = data,
+                                             aes_string(x = "lon", y = "lat", colour = values),
+                                             ...)
+    }
+    else if(aesthetic == "both"){
+      plot.map = gp + thm + map + geom_point(data = data,
+                                             aes_string(x = "lon", y = "lat", colour = values,
+                                                        size = values),
+                                             ...)
+    }
   }
+  else{
+    plot.map = gp + thm + map + geom_point(data = data,
+                                           aes_string(x = "lon", y = "lat"),
+                                           colour = point.colour, ...)
+  }
+    return(plot.map)
+}
