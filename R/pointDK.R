@@ -1,8 +1,8 @@
 #' Create quick and beautiful maps of Denmark at different levels of geographic detail
 #'
-#' @title Maps of Denmark
+#' @title Plot points on map of Denmark
 #'
-#' @name mapDK
+#' @name pointDK
 #'
 #' @author Sebastian Barfort (\email{sebastianbarfort@@gmail.com})
 #'
@@ -63,6 +63,27 @@ pointDK <- function(data, lon = "lon", lat = "lat", values = NULL,
     stop("you have not provided a valid dataset")
   }
 
+  # remove tbl_df from data frame
+  if(sum(class(data) == "tbl_df") > 0){
+    data = data.frame(data)
+  }
+
+  # remove DK characters function
+  remove_dk <- function(x){
+    x <- gsub("\\u00e6", "ae", x)
+    x <- gsub("\\u00f8", "oe", x)
+    x <- gsub("\\u00e5", "aa", x)
+    return(x)
+  }
+  # remove non-alphanumeric characters and transform to lowercase
+  onlyChar <- function(string) {
+    string <- tolower(gsub(" ", "", gsub("[^[:alnum:]]", " ", string)))
+    string <- stringi::stri_escape_unicode(string)
+    string <- remove_dk(string)
+    string <- gsub("\\\\", "", string)
+    return(string)
+  }
+
   if (!is.null(values)) {
   my.values = data[, values]
   if(is.numeric(my.values)) {
@@ -81,7 +102,7 @@ pointDK <- function(data, lon = "lon", lat = "lat", values = NULL,
     # Remove shapedata not in sub
     shapedata <- shapedata[onlyChar(shapedata$id) %in% onlyChar(sub), ]
     # Remove values not in sub
-    values <- values[onlyChar(id) %in% onlyChar(sub)]
+    values <- values[onlyChar(shapedata$id) %in% onlyChar(sub)]
     # Remove pos not in sub
     pos <- sub_match_all[which(!is.na(sub_match_all))]
     # Check if some region sub is not matched

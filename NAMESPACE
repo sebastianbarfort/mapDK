@@ -2,3 +2,4 @@
 
 export(getID)
 export(mapDK)
+export(pointDK)
