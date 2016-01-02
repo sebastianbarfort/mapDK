@@ -202,8 +202,12 @@ mapDK <- function(values = NULL, id = NULL, data,
     plot <- plt
   }
   # facet if more than one sub.plot municipality provided
-  if(length(sub.plot) > 1){
+  if(length(sub.plot) > 1 ){
     fct <- facet_wrap(~ KommuneNav, scales = "free")
+    return(plot + fct)
+  }
+  if(length(sub) > 1){
+    fct <- facet_wrap(~ id, scales = "free")
     return(plot + fct)
   }
   else {
