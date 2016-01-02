@@ -1,4 +1,12 @@
 
+fix_letters = function(string){
+  string = tolower(string)
+  string = gsub("å", "aa", string)
+  string = gsub("ø", "oe", string)
+  string = gsub("æ", "ae", string)
+  string = gsub("-", " ", string)
+}
+
 create_data = function(link, filename, region, fix.error = FALSE){
   require("rgdal")
   require("rgeos")
@@ -19,6 +27,8 @@ create_data = function(link, filename, region, fix.error = FALSE){
   map = spTransform(map, CRS("+proj=longlat +datum=WGS84"))
   map = gBuffer(map, width=0, byid=TRUE)
   map = fortify(map, region = region)
+
+  map[] = apply(map, 2, fix_letters)
 
   map$group = stringi::stri_escape_unicode(map$group)
   map$id = stringi::stri_escape_unicode(map$id)
