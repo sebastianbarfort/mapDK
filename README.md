@@ -119,9 +119,11 @@ cph.map = ggmap(get_map(location = c(12.57, 55.68),
                        source = "stamen", 
                        maptype = "toner", crop = TRUE,
                        zoom = 13))
-p = cph.map + 
+cph.map + 
   geom_polygon(data = subset(votes.cph.shape, navn == "socialdemokratiet"), 
                        aes(x = long, y = lat,
                            group = group, fill = stemmer),
                        alpha = .75) 
 ```
+
+![](README-unnamed-chunk-9-1.png)
