@@ -22,6 +22,13 @@ Currently, the package allows you to do three things:
 2. turn these maps into (static) choropleth maps
 3. plot longitude-latitude points on a map of Denmark
 
+I recommend you install the development version from github, using Hadley Wickham's [devtools](http://cran.r-project.org/web/packages/devtools/index.html) package:
+
+```
+if(!require("devtools")) install.packages("devtools")
+devtools::install_github("sebastianbarfort/mapDK")
+```
+
 To create a basic map of Denmark at the municipality level simply run
 
 ```{r, message = FALSE, warning = FALSE}
