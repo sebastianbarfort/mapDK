@@ -1,4 +1,4 @@
-#' Create quick and beautiful maps of Denmark at different levels of geographic detail
+#' Plot points on map of Denmark
 #'
 #' @title Plot points on map of Denmark
 #'
@@ -8,19 +8,22 @@
 #'
 #' @return A ggplot class object
 #'
-#' @param values,id String variables specifying names of value and id columns in the dataset
-#' @param data A data frame of values and ids
-#' @param detail A string specifying the detail level of the map
-#' @param show_missing A logical scalar. Should missing values (including NaN) be showed?
+#' @param data A data frame of points
+#' @param lon,lat String variables specifying names of longitude and latitude columns in the dataset
+#' @param values Does the data set contain values?
+#' @param aesthetic Do you want to plot your values using colour and/or size?
 #' @param sub A vector of strings specifying subregions to be plotted
 #' @param guide.label A string with custom label name
 #' @param map.title A string with map title
 #'
 #' @seealso \url{https://github.com/sebastianbarfort/mapDK}
 #' @examples
-#' mapDK(detail = "polling")
-#' mapDK(detail = "zip")
-#' mapDK(values = "indbrud", id = "kommune", data = crime)
+#'
+#' pointDK(benches, sub = "koebenhavn", point.colour = "red")
+#' # plot values
+#' benches$mydata = 1:nrow(benches)
+#' pointDK(benches, values = "mydata", detail = "polling", sub.plot = "koebenhavn", point.colour = "red",
+#'        aesthetic = "colour")
 #'
 #' @export
 #'
