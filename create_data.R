@@ -9,6 +9,7 @@ fix_letters = function(string){
 
 create_data = function(link, filename, region, fix.error = FALSE){
   require("rgdal")
+  require("maptools")
   require("rgeos")
   require("ggplot2")
 
@@ -28,7 +29,7 @@ create_data = function(link, filename, region, fix.error = FALSE){
   map = gBuffer(map, width=0, byid=TRUE)
   map = fortify(map, region = region)
 
-  map[] = apply(map, 2, fix_letters)
+  map[, c(6,7)] = apply(map[, c(6,7)], 2, fix_letters)
 
   map$group = stringi::stri_escape_unicode(map$group)
   map$id = stringi::stri_escape_unicode(map$id)
