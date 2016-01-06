@@ -107,3 +107,14 @@
 #' }
 #' @source Statistics Denmark
 "crime"
+#' Data frame of longitude-latitude points of public benches in Copenhagen
+#'
+#' A dataset containing longitude-latitude points of public benches in Copenhagen
+#'
+#' @format A data frame with 2124 rows and 2 variables:
+#' \describe{
+#'   \item{lon}{Longitude}
+#'   \item{lat}{Latitude}
+#' }
+#' @source Open Data Copenhagen
+"benches"
