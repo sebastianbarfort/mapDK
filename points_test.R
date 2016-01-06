@@ -19,14 +19,28 @@ names(df) = c("lon", "lat")
 df$lon = as.numeric(as.character(df$lon))
 df$lat = as.numeric(as.character(df$lat))
 
-pointDK(df, sub = "koebenhavn", point.colour = "red")
-pointDK(df, detail = "polling", sub.plot = "koebenhavn", point.colour = "red")
+benches = df
+
+save(benches, file = "data/benches.rda")
+
+pointDK(benches, sub = "koebenhavn", point.colour = "red")
+pointDK(benches, detail = "polling", sub.plot = "koebenhavn", point.colour = "red")
+pointDK(benches, detail = "polling", sub.plot = "koebenhavn", point.colour = "red")
+
+
+pointDK(benches, sub = "koebenhavn", point.colour = "red")
 
 # plot values
-df$mydata = 1:nrow(df)
-pointDK(df, values = "mydata", detail = "polling", sub.plot = "koebenhavn", point.colour = "red",
-        aesthetic = "size")
+benches$mydata = 1:nrow(benches)
+pointDK(benches, values = "mydata", detail = "polling", sub.plot = "koebenhavn", point.colour = "red",
+        aesthetic = "colour")
 
 
+p = ggplot()
+p = p + geom_map(map = test, data = test,
+                 aes(x=long, y=lat, map_id=id),
+                 size = 0.6, fill = "gray90", colour = "black")
 
 
+ggplot(map, aes_string(x = "long", y = "lat", group = "group")) +
+  geom_polygon()
