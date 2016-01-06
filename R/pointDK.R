@@ -162,5 +162,6 @@ pointDK <- function(data, lon = "lon", lat = "lat", values = NULL,
                                            aes_string(x = "lon", y = "lat"),
                                            colour = point.colour, ...)
   }
+  plot.map = plot.map + coord_map()
     return(plot.map)
 }
