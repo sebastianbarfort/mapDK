@@ -1,10 +1,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-This is a package for making easy ggplot2 based maps of Denmark.
+This is a package for making easy maps of Denmark.
 
-Currently, the package allows you to do two things:
+Currently, the package allows you to do three things:
 
-1.  make basic maps of DK
+1.  make basic maps of Denmark
 2.  turn these maps into (static) choropleth maps
+3.  plot longitude-latitude points on a map of Denmark
 
 To create a basic map of Denmark at the municipality level simply run
 
@@ -12,6 +13,8 @@ To create a basic map of Denmark at the municipality level simply run
 library(mapDK)
 mapDK()
 ```
+
+![](README-unnamed-chunk-2-1.png) 
 
 You can control the level of the map by specifying the `detail` argument. Currenty, `mapDK` accepts the following arguments
 
@@ -37,17 +40,14 @@ One creates a choropleth map simply by specifying the values and id's (as string
 mapDK(values = "indbrud", id = "kommune", data = crime)
 ```
 
-If you don't provide names for all municipalities, the function will throw a warning. Let's randomly remove 20 rows and plot the data again
+![](README-unnamed-chunk-3-1.png) 
 
-``` r
-crime.2 = mapDK::crime[-sample(1:nrow(mapDK::crime), 20), ]
-mapDK(values = "indbrud", id = "kommune", data = crime.2)
-```
+If you don't provide names for all municipalities, the function will throw a warning.
 
 Plot Polling Place Data
 -----------------------
 
-You can create beautiful maps of election results at the polling place level by specifying `detail = "polling"`. The package includes a dataset of Danish general election 2011 results at the polling level. Below, we plot Socialdemokratiets election results in percent at each available polling place in the map dataset
+You can create cool maps of election results at the polling place level by specifying `detail = "polling"`. The package includes a dataset of Danish general election 2011 results at the polling level. Below, we plot Socialdemokratiets election results in percent at each available polling place in the map dataset
 
 ``` r
 mapDK(values = "stemmer", id = "id", 
@@ -55,6 +55,41 @@ mapDK(values = "stemmer", id = "id",
   detail = "polling", show_missing = FALSE,
   guide.label = "Stemmer \nSocialdemokratiet (pct)")
 ```
+
+![](README-unnamed-chunk-4-1.png) 
+
+Say you only want to plot Socialdemokratiets votes in Copenhagen. That's easily done using the `sub.plot` option
+
+``` r
+mapDK(values = "stemmer", id = "id", 
+  data = subset(votes, navn == "socialdemokratiet"),
+  detail = "polling", show_missing = FALSE,
+  guide.label = "Stemmer \nSocialdemokratiet (pct)",
+  sub.plot = "koebenhavn")
+```
+
+![](README-unnamed-chunk-5-1.png) 
+
+Plot points on a map of Denmark
+-------------------------------
+
+You can provide your own data set of longitude-latitude points (in WGS84) and plot them on a map of Denmark using the `pointDK` function. Below, I plot a data set of benches in Copenhagen available in the package
+
+``` r
+pointDK(benches, sub = "koebenhavn", point.colour = "red")
+```
+
+![](README-unnamed-chunk-6-1.png) 
+
+You can also plot values in your data by specifying a `values` column
+
+``` r
+benches$mydata = 1:nrow(benches) # create values
+pointDK(benches, values = "mydata", detail = "polling", sub.plot = "koebenhavn", point.colour = "red",
+       aesthetic = "colour")
+```
+
+![](README-unnamed-chunk-7-1.png) 
 
 The getID function
 ------------------
@@ -64,25 +99,29 @@ The `getID` function allows you to print the map key. Running this before plotti
 `getID` accepts only one argument, `detail`, and using it is as easy as (it returns keys for municipalities if nothing else is specified)
 
 ``` r
-getID()
+getID()[1:10]
+#>  [1] "aabenraa"    "aalborg"     "aeroe"       "albertslund" "alleroed"   
+#>  [6] "aarhus"      "assens"      "ballerup"    "billund"     "bornholm"
 ```
 
 Say you want the names of the parishes instead, just run `mapDK(detail = "parish")`.
 
-Extra Features
---------------
+`mapDK` and `ggmap`
+-------------------
 
-You can remove missing municipalities by changing `show_missing` to false and you can add a custom legend title by specifying the `guide.label` option
-
-``` r
-mapDK(values = "indbrud", id = "kommune", data = crime.2, show_missing = FALSE,
-  guide.label = "this is \na label")
-```
-
-Every `mapDK` call returns a `ggplot2` object which can be modified using ggplot's functionality.
-
-You can also provide a `sub` option specifying what municipalities in your data you want plotted. This option works for both choropleth and basic maps.
+The functions in `mapDK` work nicely with `ggmap`. Below is an example
 
 ``` r
-mapDK(sub = c("Aalborg", "Silkeborg", "Viborg", "Aarhus"))
+library("ggmap")
+library("dplyr")
+votes.cph.shape = mapDK::polling %>% filter(KommuneNav == "koebenhavn") %>% left_join(mapDK::votes)
+cph.map = ggmap(get_map(location = c(12.57, 55.68), 
+                       source = "stamen", 
+                       maptype = "toner", crop = TRUE,
+                       zoom = 13))
+p = cph.map + 
+  geom_polygon(data = subset(votes.cph.shape, navn == "socialdemokratiet"), 
+                       aes(x = long, y = lat,
+                           group = group, fill = stemmer),
+                       alpha = .75) 
 ```
