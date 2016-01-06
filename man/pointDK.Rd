@@ -11,15 +11,15 @@ pointDK(data, lon = "lon", lat = "lat", values = NULL,
   point.colour = "black", ...)
 }
 \arguments{
-\item{data}{A data frame of values and ids}
+\item{data}{A data frame of points}
 
-\item{values, id}{String variables specifying names of value and id columns in the dataset}
+\item{lon, lat}{String variables specifying names of longitude and latitude columns in the dataset}
 
-\item{detail}{A string specifying the detail level of the map}
-
-\item{show_missing}{A logical scalar. Should missing values (including NaN) be showed?}
+\item{values}{Does the data set contain values?}
 
 \item{sub}{A vector of strings specifying subregions to be plotted}
+
+\item{aesthetic}{Do you want to plot your values using colour and/or size?}
 
 \item{guide.label}{A string with custom label name}
 
@@ -29,12 +29,15 @@ pointDK(data, lon = "lon", lat = "lat", values = NULL,
 A ggplot class object
 }
 \description{
-Create quick and beautiful maps of Denmark at different levels of geographic detail
+Plot points on map of Denmark
 }
 \examples{
-mapDK(detail = "polling")
-mapDK(detail = "zip")
-mapDK(values = "indbrud", id = "kommune", data = crime)
+
+pointDK(benches, sub = "koebenhavn", point.colour = "red")
+# plot values
+benches$mydata = 1:nrow(benches)
+pointDK(benches, values = "mydata", detail = "polling", sub.plot = "koebenhavn", point.colour = "red",
+       aesthetic = "colour")
 
 }
 \author{
