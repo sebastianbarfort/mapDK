@@ -59,6 +59,9 @@ mapDK <- function(values = NULL, id = NULL, data,
   else {
     stop(paste("the detail you provided is not valid"))
   }
+
+  my.sub = sub
+
   # remove DK characters function
   remove_dk <- function(x){
     x <- gsub("\\u00e6", "ae", x)
@@ -206,7 +209,7 @@ mapDK <- function(values = NULL, id = NULL, data,
     fct <- facet_wrap(~ KommuneNav, scales = "free")
     return(plot + fct)
   }
-  if(length(sub) > 1){
+  else if(length(my.sub) > 1){
     fct <- facet_wrap(~ id, scales = "free")
     return(plot + fct)
   }
