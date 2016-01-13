@@ -6,4 +6,6 @@ cran-comments.md
 NEWS\.md
 create_data.R
 points_test.R
-
+hexa_functions.R
+create_hexadata.R
+nondata/
