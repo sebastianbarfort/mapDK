@@ -13,9 +13,7 @@ source("nonpackage/hexa_functions.R")
 #   my.df = rbind(my.df, my.k)
 # }
 
-
 ### creates hexa data frame -----------------
-
 # read optimal n
 df.opt.n = readr::read_csv("nonpackage/data/optimal_n.csv")
 
@@ -32,6 +30,9 @@ for (k in seq_along(unique(dk.shp$NAME_2))){
   }
 }
 
+hex_polygons = all.polygons
 
+# write polygon to data folder
+save(hex_polygons, file = "data/hex_polygons.rda")
 
 
