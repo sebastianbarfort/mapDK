@@ -1,4 +1,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+**Please note: I am currently extremely busy and will not have time to work on this package before summer 2017. If you have requests or additions you would like me to add please make a pull request or add an issue and I will look at it as soon as I have time.**
+
 This is a package for making easy maps of Denmark.
 
 Currently, the package allows you to do three things:
